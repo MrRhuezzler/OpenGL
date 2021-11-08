@@ -14,8 +14,8 @@ pkg_search_module(GLEW REQUIRED glew)
 
 include_directories(
     ${GLFW_INCLUDE_DIRS} 
-    ${OPENGL_INCLUDE_DIRS} 
     ${GLEW_INCLUDE_DIRS}
+    ${OPENGL_INCLUDE_DIRS} 
 )
 
 add_executable(${PROJECT_NAME} main.cpp)
@@ -26,3 +26,12 @@ target_link_libraries(
     ${GLEW_LIBRARIES} 
     ${OPENGL_LIBRARIES}
 )
+
+add_custom_target(
+    copy_shaders 
+    COMMAND ${CMAKE_COMMAND} -E copy_directory 
+    ${CMAKE_CURRENT_LIST_DIR}/Shaders 
+    ${CMAKE_CURRENT_BINARY_DIR}/Shaders
+)
+
+add_dependencies(${PROJECT_NAME} copy_shaders)
