@@ -121,26 +121,37 @@ int main()
         -0.5f, -0.5f,
         0.5f, -0.5f,
         0.5f, 0.5f,
-        0.5f, 0.5f,
         -0.5f, 0.5f,
-        -0.5f, -0.5f
+    };
+
+    // Indices array - Strictly Unsigned
+    unsigned int indices[] = {
+        0, 1, 2,
+        2, 3, 0
     };
 
     // Vertex Buffers
     unsigned int buffer;
     // Creating a buffer
     glGenBuffers(1, &buffer);
-
     // Selecting a buffer
     glBindBuffer(GL_ARRAY_BUFFER, buffer);
-
     // Setting the size of the buffer
     glBufferData(GL_ARRAY_BUFFER, 6 * 2 * sizeof(float), &positions, GL_STATIC_DRAW);
-
     // Setting up how the memory should be interpreted ?
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0);
     // Enable the vertex attribute
     glEnableVertexAttribArray(0);
+
+
+    // Vertex Buffers
+    unsigned int ibo;
+    // Creating a buffer
+    glGenBuffers(1, &ibo);
+    // Selecting a buffer
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+    // Setting the size of the buffer
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(unsigned int), &indices, GL_STATIC_DRAW);
 
     Shader source = ParseShader("Shaders/Basic.shader");
     unsigned int basicShaderProgram = createProgram(source.vertexSrc, source.fragmentSrc);
@@ -153,7 +164,8 @@ int main()
         glClear(GL_COLOR_BUFFER_BIT);
 
         // Draw Calls - Draws the current bound buffer.
-        glDrawArrays(GL_TRIANGLES, 0, 6);
+        // glDrawArrays(GL_TRIANGLES, 0, 6);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
 
         // Legacy OpenGL
         // glBegin(GL_TRIANGLES);
