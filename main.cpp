@@ -112,6 +112,10 @@ int main()
     if (!glfwInit())
         return -1;
 
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
     /* Create a windowed mode window and its OpenGL context */
     window = glfwCreateWindow(640, 480, "OpenGL", NULL, NULL);
     if (!window)
@@ -128,6 +132,8 @@ int main()
     {
         std::cout << "[GLEW Error] : " << glewGetErrorString(err) << std::endl;
     }
+
+    glfwSwapInterval(1);
 
     std::cout << "OpenGL Version : " << glGetString(GL_VERSION) << std::endl;
     {
@@ -157,15 +163,41 @@ int main()
         Shader source = ParseShader("Shaders/Basic.shader");
         unsigned int basicShaderProgram = createProgram(source.vertexSrc, source.fragmentSrc);
         GLCall(glUseProgram(basicShaderProgram));
+        
+        GLCall(int u_Color = glGetUniformLocation(basicShaderProgram, "u_Color"));
+        assert(u_Color != -1);
+
+        GLCall(glUseProgram(0));
+        vb.UnBind();
+        ibo.UnBind();
+
+        float r = 0.0f;
+        float increment = 0.01f;
 
         while (!glfwWindowShouldClose(window))
         {
+
             glClear(GL_COLOR_BUFFER_BIT);
+
+            GLCall(glUseProgram(basicShaderProgram));
+            GLCall(glUniform4f(u_Color, r, 0.3, 0.5f, 1.0f));
+
+            vb.Bind();
+            // GLCall(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0));
+            // GLCall(glEnableVertexAttribArray(0));
+
+            ibo.Bind();
 
             GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
 
+            if(r > 1.0f || r < 0.0f){
+                increment = (-1.0f * increment);
+            }
+            r += increment;
+
             glfwSwapBuffers(window);
             glfwPollEvents();
+
         }
 
         glDeleteProgram(basicShaderProgram);
