@@ -18,7 +18,10 @@ include_directories(
     ${OPENGL_INCLUDE_DIRS} 
 )
 
-add_executable(${PROJECT_NAME} main.cpp)
+add_executable(${PROJECT_NAME}   "main.cpp"
+                "renderer.h"     "renderer.cpp" 
+                "vertexbuffer.h" "vertexbuffer.cpp"
+                "indexbuffer.h"  "indexbuffer.cpp")
 
 target_link_libraries(
     ${PROJECT_NAME} 
