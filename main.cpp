@@ -151,6 +151,10 @@ int main()
             2, 3, 0
         };
 
+        unsigned int vao;
+        GLCall(glGenVertexArrays(1, &vao));
+        GLCall(glBindVertexArray(vao));
+
         VertexBuffer vb(positions, 4 * 2 * sizeof(float));
         vb.Bind();
 
@@ -182,7 +186,7 @@ int main()
             GLCall(glUseProgram(basicShaderProgram));
             GLCall(glUniform4f(u_Color, r, 0.3, 0.5f, 1.0f));
 
-            vb.Bind();
+            // vb.Bind();
             // GLCall(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0));
             // GLCall(glEnableVertexAttribArray(0));
 
