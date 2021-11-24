@@ -77,14 +77,12 @@ int main()
         while (!glfwWindowShouldClose(window))
         {
 
-            glClear(GL_COLOR_BUFFER_BIT);
+            Renderer::Clear();
 
             basicShaderProgram.Bind();
             basicShaderProgram.SetUniform4f("u_Color", r, 0.3, 0.5, 1.0);
-            vao.Bind();
-            ibo.Bind();
 
-            GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
+            Renderer::DrawElementsTris(vao, ibo, basicShaderProgram);
 
             if(r > 1.0f || r < 0.0f){
                 increment = (-1.0f * increment);

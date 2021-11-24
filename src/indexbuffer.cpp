@@ -4,6 +4,7 @@
 #include "indexbuffer.h"
 
 IndexBuffer::IndexBuffer(const unsigned int* data, unsigned int count) 
+:count(count)
 {
     GLCall(glGenBuffers(1, &id));
     GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,id));
@@ -23,4 +24,8 @@ void IndexBuffer::Bind() const
 void IndexBuffer::UnBind() const
 {
     GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
+}
+
+unsigned int IndexBuffer::GetCount() const {
+    return count;
 }

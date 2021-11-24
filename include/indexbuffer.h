@@ -4,6 +4,7 @@
 class IndexBuffer {
 
     unsigned int id;
+    unsigned int count;
 
     public:
         IndexBuffer(const unsigned int* data, unsigned int count);
@@ -11,6 +12,7 @@ class IndexBuffer {
 
         void Bind() const;
         void UnBind() const;
+        unsigned int GetCount() const;
 
 };
 

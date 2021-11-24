@@ -3,6 +3,12 @@
 
 #include <cstdlib>
 
+#include "vertexArray.h"
+#include "indexbuffer.h"
+#include "shader.h"
+
+class VertexArray;
+
 #define DEBUG
 
 #define assert(x) if(!(x)) exit(1);
@@ -23,5 +29,15 @@
 
 void GLClearErrors();
 bool GLLogError(const char* function, const char* file, int line);
+
+
+class Renderer {
+
+    public:
+        static void SetClearColor(float r, float g, float b, float a);
+        static void Clear();
+        static void DrawElementsTris(const VertexArray& va, const IndexBuffer& ib, const Shader& shader);
+
+};
 
 #endif // __RENDERER_H__

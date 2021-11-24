@@ -4,6 +4,8 @@
 #include "vertexbuffer.h"
 #include "bufferLayout.h"
 
+class BufferLayout;
+
 class VertexArray {
 
     unsigned int id;

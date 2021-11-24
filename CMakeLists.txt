@@ -26,8 +26,8 @@ add_executable(
     "src/renderer.cpp"
     "src/indexbuffer.cpp"
     "src/vertexbuffer.cpp"
-    "src/bufferLayout.cpp"
     "src/vertexArray.cpp"
+    "src/bufferLayout.cpp"
 )
 
 target_link_libraries(
