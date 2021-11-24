@@ -3,6 +3,35 @@ project("OpenGL")
 
 set(CMAKE_CXX_STANDARD 17)
 
+# ImGUI Compilation
+set(IMGUI_DIR ${CMAKE_CURRENT_SOURCE_DIR}/vendor/imgui)
+add_library(ImGUI STATIC)
+
+target_sources(ImGUI
+               PRIVATE
+                ${IMGUI_DIR}/imgui.cpp
+                ${IMGUI_DIR}/imgui_demo.cpp
+                ${IMGUI_DIR}/imgui_draw.cpp
+                ${IMGUI_DIR}/imgui_tables.cpp
+                ${IMGUI_DIR}/imgui_widgets.cpp
+
+                ${IMGUI_DIR}/backends/imgui_impl_glfw.cpp
+                ${IMGUI_DIR}/backends/imgui_impl_opengl3.cpp
+)
+
+target_include_directories(ImGUI
+                           PUBLIC ${IMGUI_DIR}
+                           PUBLIC ${IMGUI_DIR}/backends
+)
+
+target_link_libraries(
+    ImGUI
+    ${GLFW_LIBRARIES}
+    ${OPENGL_LIBRARIES}
+)
+
+# Binary Compilation
+
 add_compile_definitions(GLEW_STATIC)
 
 find_package(PkgConfig REQUIRED)
@@ -16,6 +45,7 @@ include_directories(
     "include/"
     ${GLFW_INCLUDE_DIRS}
     ${GLEW_INCLUDE_DIRS}
+    ${ImGUI_INCLUDE_DIRS}
     ${OPENGL_INCLUDE_DIRS}
 )
 
@@ -31,7 +61,8 @@ add_executable(
 )
 
 target_link_libraries(
-    ${PROJECT_NAME} 
+    ${PROJECT_NAME}
+    ImGUI 
     ${GLFW_LIBRARIES} 
     ${GLEW_LIBRARIES} 
     ${OPENGL_LIBRARIES}

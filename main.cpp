@@ -13,6 +13,10 @@
 #include "vertexArray.h"
 #include "bufferLayout.h"
 
+#include "imgui.h"
+#include "imgui_impl_opengl3.h"
+#include "imgui_impl_glfw.h"
+
 int main()
 {
     GLFWwindow *window;
@@ -20,7 +24,8 @@ int main()
     /* Initialize the library */
     if (!glfwInit())
         return -1;
-
+    
+    const char* glsl_version = "#version 130";
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
@@ -43,6 +48,18 @@ int main()
     }
 
     glfwSwapInterval(1);
+
+    //ImGUI Initialization
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO(); (void)io;
+    // Setup Dear ImGui style
+    ImGui::StyleColorsDark();
+
+    // Setup Platform/Renderer backends
+    ImGui_ImplGlfw_InitForOpenGL(window, true);
+    ImGui_ImplOpenGL3_Init(glsl_version);
+
 
     std::cout << "OpenGL Version : " << glGetString(GL_VERSION) << std::endl;
     {
@@ -71,23 +88,30 @@ int main()
         IndexBuffer ibo(indices, 6);
         Shader basicShaderProgram("Shaders/Basic.shader");
 
-        float r = 0.0f;
-        float increment = 0.01f;
+        // float r = 0.0f;
+        // float increment = 0.01f;
+        ImVec4 color = ImVec4(1.0f, 1.0f, 1.0f, 1.0f);
 
         while (!glfwWindowShouldClose(window))
         {
 
-            Renderer::Clear();
+            // ImGUI
+            ImGui_ImplOpenGL3_NewFrame();
+            ImGui_ImplGlfw_NewFrame();
+            ImGui::NewFrame();
+
+            // ImGui::ShowDemoWindow(NULL);
+            ImGui::Begin("Properties");
+            ImGui::ColorEdit4("Color", (float*)&color);
+            ImGui::End();
 
             basicShaderProgram.Bind();
-            basicShaderProgram.SetUniform4f("u_Color", r, 0.3, 0.5, 1.0);
+            basicShaderProgram.SetUniform4f("u_Color", color.x, color.y, color.z, color.w);
 
+            ImGui::Render();
+            Renderer::Clear();
             Renderer::DrawElementsTris(vao, ibo, basicShaderProgram);
-
-            if(r > 1.0f || r < 0.0f){
-                increment = (-1.0f * increment);
-            }
-            r += increment;
+            ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
             glfwSwapBuffers(window);
             glfwPollEvents();
@@ -96,6 +120,11 @@ int main()
 
     }
 
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
+
+    glfwDestroyWindow(window);
     glfwTerminate();
     return 0;
 }
