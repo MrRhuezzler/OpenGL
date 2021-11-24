@@ -21,7 +21,7 @@ bool GLLogError(const char* function, const char* file, int line){
 }
 
 void Renderer::SetClearColor(float r, float g, float b, float a){
-
+    glClearColor(r * a, g * a, b * a, a);
 }
 
 void Renderer::Clear(){

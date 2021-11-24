@@ -88,9 +88,8 @@ int main()
         IndexBuffer ibo(indices, 6);
         Shader basicShaderProgram("Shaders/Basic.shader");
 
-        // float r = 0.0f;
-        // float increment = 0.01f;
         ImVec4 color = ImVec4(1.0f, 1.0f, 1.0f, 1.0f);
+        ImVec4 clearColor = ImVec4(0.0f, 0.0f, 0.0f, 1.0f);
 
         while (!glfwWindowShouldClose(window))
         {
@@ -102,13 +101,15 @@ int main()
 
             // ImGui::ShowDemoWindow(NULL);
             ImGui::Begin("Properties");
-            ImGui::ColorEdit4("Color", (float*)&color);
+            ImGui::ColorEdit4("Clear Color", (float*)&clearColor);
+            ImGui::ColorEdit4("Square Color", (float*)&color);
             ImGui::End();
 
             basicShaderProgram.Bind();
-            basicShaderProgram.SetUniform4f("u_Color", color.x, color.y, color.z, color.w);
+            basicShaderProgram.SetUniform4f("u_Color", color.x * color.w, color.y * color.w, color.z * color.w, color.w);
 
             ImGui::Render();
+            Renderer::SetClearColor(clearColor.x, clearColor.y, clearColor.z, clearColor.w);
             Renderer::Clear();
             Renderer::DrawElementsTris(vao, ibo, basicShaderProgram);
             ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
