@@ -108,14 +108,21 @@ unsigned int Shader::compileShader(unsigned int type, std::string source)
     return s_id;
 }
 
-void Shader::SetUniform4f(std::string name, float x, float y, float z, float w) 
-{
+void Shader::SetUniform1i(std::string name, int value){
+    GLCall(glUniform1i(getUniformLocation(name), value));
+}
+
+void Shader::SetUniform4f(std::string name, float x, float y, float z, float w) {
+    GLCall(glUniform4f(getUniformLocation(name), x, y, z, w));
+}
+
+int Shader::getUniformLocation(std::string name){
 
     if(uniforms.find(name) == uniforms.end()){
         GLCall(int uniform = glGetUniformLocation(id, name.c_str()));
         uniforms[name] = uniform;
     }
 
-    GLCall(glUniform4f(uniforms[name], x, y, z, w));
+    return uniforms[name];
 
 }

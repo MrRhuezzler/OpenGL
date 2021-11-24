@@ -23,12 +23,13 @@ class Shader {
         void Bind() const;
         void UnBind() const;
 
+        void SetUniform1i(std::string name, int value);
         void SetUniform4f(std::string name, float x, float y, float z, float w);
-        // GLCall(glUniform4f(u_Color, r, 0.3, 0.5f, 1.0f));
 
     private:
         unsigned int compileShader(unsigned int type, std::string source);
         shaderSources parseShader(const std::string& filepath);
+        int getUniformLocation(std::string name);
 
 };
 
