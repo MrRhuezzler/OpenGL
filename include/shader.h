@@ -2,11 +2,14 @@
 #define __SHADER_H__
 
 #include <string>
+#include <unordered_map>
 
 class Shader {
 
     std::string filepath;
     unsigned int id;
+
+    std::unordered_map<std::string, int> uniforms;
 
     public:
         struct shaderSources {

@@ -6,7 +6,11 @@
 #include "renderer.h"
 #include "shader.h"
 
-Shader::Shader(const std::string& filepath){
+Shader::Shader(const std::string& filepath)
+:filepath(filepath)
+{
+
+    uniforms = std::unordered_map<std::string, int>();
 
     GLCall(id = glCreateProgram());
     Shader::shaderSources src = parseShader(filepath);
@@ -102,4 +106,16 @@ unsigned int Shader::compileShader(unsigned int type, std::string source)
     }
 
     return s_id;
+}
+
+void Shader::SetUniform4f(std::string name, float x, float y, float z, float w) 
+{
+
+    if(uniforms.find(name) == uniforms.end()){
+        GLCall(int uniform = glGetUniformLocation(id, name.c_str()));
+        uniforms[name] = uniform;
+    }
+
+    GLCall(glUniform4f(uniforms[name], x, y, z, w));
+
 }

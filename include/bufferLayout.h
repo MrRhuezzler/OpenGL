@@ -27,44 +27,12 @@ class BufferLayout {
         ~BufferLayout();
 
         template<typename T>
-        void Add(int count, bool normalize);
+        void Add(unsigned int count, bool normalize);
 
         unsigned int GetStride() const;
         const std::vector<Layout>& GetLayout() const;
 
 };
-
-template<typename T>
-void BufferLayout::Add(int count, bool normalize) 
-{
-    std::cout << "Invalid Type" << std::endl;
-    assert(false);
-}
-
-template<>
-void BufferLayout::Add<float>(int count, bool normalize)
-{
-    Layout l = {GL_FLOAT, count, count * sizeof(float), normalize};
-    layouts.push_back(l);
-    stride += sizeof(float);
-}
-
-template<>
-void BufferLayout::Add<unsigned int>(int count, bool normalize)
-{
-    Layout l = {GL_UNSIGNED_INT, count, count * sizeof(unsigned int), normalize};
-    layouts.push_back(l);
-    stride += sizeof(unsigned int);
-}
-
-template<>
-void BufferLayout::Add<unsigned char>(int count, bool normalize)
-{
-    Layout l = {GL_UNSIGNED_BYTE, count, count * sizeof(unsigned char), normalize};
-    layouts.push_back(l);
-    stride += sizeof(unsigned char);
-}
-
 
 // GLCall(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0));
 // GLCall(glEnableVertexAttribArray(0));
