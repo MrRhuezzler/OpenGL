@@ -5,7 +5,7 @@
 
 #define DEBUG
 
-#define assert(x) if(!(x)) exit(10);
+#define assert(x) if(!(x)) exit(1);
 
 #ifdef DEBUG
 #define GLCall(x) GLClearErrors();\
@@ -15,6 +15,10 @@
 
 #ifndef DEBUG
 #define GLCall(x) x;
+#endif
+
+#ifdef DEBUG
+#define LOG(x) std::cout << "[LOG] " << #x << std::endl;
 #endif
 
 void GLClearErrors();

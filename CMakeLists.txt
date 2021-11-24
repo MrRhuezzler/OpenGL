@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.21)
-project("OPENGL")
+project("OpenGL")
 
 set(CMAKE_CXX_STANDARD 17)
 
@@ -13,15 +13,22 @@ pkg_search_module(GLFW REQUIRED glfw3)
 pkg_search_module(GLEW REQUIRED glew)
 
 include_directories(
-    ${GLFW_INCLUDE_DIRS} 
+    "include/"
+    ${GLFW_INCLUDE_DIRS}
     ${GLEW_INCLUDE_DIRS}
-    ${OPENGL_INCLUDE_DIRS} 
+    ${OPENGL_INCLUDE_DIRS}
 )
 
-add_executable(${PROJECT_NAME}   "main.cpp"
-                "renderer.h"     "renderer.cpp" 
-                "vertexbuffer.h" "vertexbuffer.cpp"
-                "indexbuffer.h"  "indexbuffer.cpp")
+add_executable(
+    ${PROJECT_NAME} 
+    "main.cpp"
+    "src/shader.cpp"
+    "src/renderer.cpp"
+    "src/indexbuffer.cpp"
+    "src/vertexbuffer.cpp"
+    "src/bufferLayout.cpp"
+    "src/vertexArray.cpp"
+)
 
 target_link_libraries(
     ${PROJECT_NAME} 
@@ -31,10 +38,13 @@ target_link_libraries(
 )
 
 add_custom_target(
-    copy_shaders 
+    copy_shaders
     COMMAND ${CMAKE_COMMAND} -E copy_directory 
     ${CMAKE_CURRENT_LIST_DIR}/Shaders 
     ${CMAKE_CURRENT_BINARY_DIR}/Shaders
 )
 
-add_dependencies(${PROJECT_NAME} copy_shaders)
+add_dependencies(
+    ${PROJECT_NAME} 
+    copy_shaders
+)
