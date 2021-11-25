@@ -2,15 +2,19 @@ cmake_minimum_required(VERSION 3.21)
 
 project(Vendor)
 
+
 # Libraries
 ### ImGUI
 ### stb_image
+### glm
+
 find_package(PkgConfig REQUIRED)
 find_package(OpenGL REQUIRED)
 pkg_search_module(GLFW REQUIRED glfw3)
 
 # ImGUI
 set(IMGUI_DIR ${CMAKE_CURRENT_SOURCE_DIR}/imgui)
+message("-- vIMGUI : Static")
 add_library(vIMGUI STATIC)
 
 target_sources(vIMGUI
@@ -38,6 +42,7 @@ target_link_libraries(
 
 # stb_image
 set(STBIMAGE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/stb_image)
+message("-- vSTB_IMAGE : Static")
 add_library(vSTB_IMAGE STATIC)
 
 target_sources(
@@ -50,3 +55,6 @@ target_include_directories(
     vSTB_IMAGE
     PUBLIC ${STBIMAGE_DIR}/include
 )
+
+# glm
+add_subdirectory(glm)

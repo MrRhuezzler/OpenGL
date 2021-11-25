@@ -15,6 +15,14 @@
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
 
+#include "glm/vec4.hpp"
+#include "glm/mat4x4.hpp"
+#include "glm/gtc/type_ptr.hpp"
+#include "glm/gtc/matrix_transform.hpp"
+
+int width = 800;
+int height = 600;
+
 int main()
 {
     GLFWwindow *window;
@@ -29,7 +37,7 @@ int main()
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     /* Create a windowed mode window and its OpenGL context */
-    window = glfwCreateWindow(640, 480, "OpenGL", NULL, NULL);
+    window = glfwCreateWindow(width, height, "OpenGL", NULL, NULL);
     if (!window)
     {
         glfwTerminate();
@@ -62,65 +70,37 @@ int main()
     std::cout << "OpenGL Version : " << glGetString(GL_VERSION) << std::endl;
     {
 
+        GLCall(glEnable(GL_DEPTH_TEST));
         GLCall(glEnable(GL_BLEND));
         GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 
-        // Square
-        // float positions[] = {
-        //     -0.5f,-0.5f, 0.0f, 0.0f,
-        //     0.5f,-0.5f, 1.0f, 0.0f,
-        //     0.5f,0.5f, 1.0f, 1.0f,
-        //     -0.5f,0.5f, 0.0f, 1.0f
-        // };
-
-        // Circular Triangles
+        // Cube
         float positions[] = {
-             0.00f,  0.00f,
-             0.25f, -0.50f,
-             0.50f, -0.25f,
-             0.50f,  0.25f,
-             0.25f,  0.50f,
-            -0.25f,  0.50f,
-            -0.50f,  0.25f,
-            -0.50f, -0.25f,
-            -0.25f, -0.50f,
+            
         };
 
         // Indices array - Strictly Unsigned
         // Square
-        // unsigned int indices[] = {
-        //     0, 1, 2,
-        //     2, 3, 0
-        // };
-
-        // Circular Triangles
         unsigned int indices[] = {
-            0, 1, 2,
-            0, 2, 3,
-            0, 3, 4,
-            0, 4, 5,
-            0, 5, 6,
-            0, 6, 7,
-            0, 7, 8,
-            0, 8, 1,
+
         };
 
-        VertexBuffer vb(positions, 9 * 2 * sizeof(float));
+        VertexBuffer vb(positions, sizeof(positions));
 
         VertexArray vao;
         BufferLayout bl;
-        bl.Add<float>(2, false);
+        bl.Add<float>(3, false);
         vao.AddBuffer(vb, bl);
 
-        IndexBuffer ibo(indices, 8 * 3);
-        Shader basicShaderProgram("shaders/basic.shader");
-        // Shader texture2dProgram("shaders/texture2d.shader");
+        IndexBuffer ibo(indices, 12 * 3);
+        Shader shader("shaders/proj.shader");
 
-        // Texture2D tex("textures/logo.png");
-        // tex.Bind();
+        // Projections, View, Model
+        glm::mat4 proj = glm::perspective(glm::radians(45.0f), float(width / height), 0.01f, 10.0f);
+        glm::mat4 model(1.0f);
+        glm::mat4 view = glm::lookAt(glm::vec3(0.0, 0.0, 5.0f), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
 
-        // texture2dProgram.Bind();
-        // texture2dProgram.SetUniform1i("u_Texture2D", 0);
+        model = glm::translate(model, glm::vec3(0.0, 0.0, 0.0));
 
         ImVec4 color = ImVec4(1.0f, 1.0f, 1.0f, 1.0f);
         ImVec4 clearColor = ImVec4(0.0f, 0.0f, 0.0f, 1.0f);
@@ -133,19 +113,25 @@ int main()
             ImGui_ImplGlfw_NewFrame();
             ImGui::NewFrame();
 
-            // ImGui::ShowDemoWindow(NULL);
             ImGui::Begin("Properties");
             ImGui::ColorEdit4("Clear Color", (float*)&clearColor);
             ImGui::ColorEdit4("Square Color", (float*)&color);
             ImGui::End();
 
-            basicShaderProgram.Bind();
-            basicShaderProgram.SetUniform4f("u_Color", color.x, color.y, color.z, color.w);
-
             ImGui::Render();
             Renderer::SetClearColor(clearColor.x, clearColor.y, clearColor.z, clearColor.w);
             Renderer::Clear();
-            Renderer::DrawElementsTris(vao, ibo, basicShaderProgram);
+
+            // Set Uniforms
+            shader.Bind();
+            shader.SetUniformMat4("u_Model", glm::value_ptr(model));
+            shader.SetUniformMat4("u_View", glm::value_ptr(view));
+            shader.SetUniformMat4("u_Projection", glm::value_ptr(proj));
+
+            model = glm::rotate(model, 0.02f, glm::vec3(0.0, 1.0, 0.0));
+            model = glm::rotate(model, 0.01f, glm::vec3(0.0, 0.0, 1.0));
+
+            Renderer::DrawElementsTris(vao, ibo, shader);
             ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
             glfwSwapBuffers(window);

@@ -3,6 +3,9 @@ project("OpenGL")
 
 set(CMAKE_CXX_STANDARD 17)
 
+option(BUILD_STATIC_LIBS "Build Static Library" ON)
+option(BUILD_SHARED_LIBS "Build Shared Library" OFF)
+
 add_subdirectory(vendor)
 
 add_compile_definitions(GLEW_STATIC)
@@ -40,6 +43,7 @@ target_link_libraries(
     ${OPENGL_LIBRARIES}
     vIMGUI
     vSTB_IMAGE
+    glm_static
 )
 
 add_custom_target(

@@ -25,6 +25,7 @@ class Shader {
 
         void SetUniform1i(std::string name, int value);
         void SetUniform4f(std::string name, float x, float y, float z, float w);
+        void SetUniformMat4(std::string name, const float* mat4);
 
     private:
         unsigned int compileShader(unsigned int type, std::string source);
